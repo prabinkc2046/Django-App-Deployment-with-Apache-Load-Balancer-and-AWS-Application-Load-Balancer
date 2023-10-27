@@ -1,0 +1,16 @@
+<VirtualHost *:80>
+	ServerName prabinkc.com
+	Header add Set-Cookie "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/" env=BALANCER_ROUTE_CHANGED
+	<Proxy "balancer://mycluster">
+	    BalancerMember http://172.105.184.90:8000 route=server1
+	    BalancerMember http://172.105.184.101:8000 route=server2
+	    ProxySet stickysession=ROUTEID
+	</Proxy>
+
+	ProxyPass "/" "balancer://mycluster/" 
+	ProxyPassReverse "/" "balancer://mycluster/"
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+
+</VirtualHost>

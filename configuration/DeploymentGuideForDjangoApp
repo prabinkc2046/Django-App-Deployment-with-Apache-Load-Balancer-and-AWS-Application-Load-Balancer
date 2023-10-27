@@ -1,0 +1,73 @@
+# Update package repositories
+sudo apt update -y
+
+# Set the hostname for the server
+sudo hostnamectl set-hostname django1-app-server
+
+# Show the server's IP address
+ip add show
+
+# Edit the hosts file to configure hostname resolution
+sudo nano /etc/hosts
+
+# Log out of the current session to apply the hostname changes
+
+# Install Python and necessary packages
+sudo apt install python3 python3-pip python3-venv
+
+# Clone the Django project repository from GitHub
+git clone https://github.com/prabinkc2046/django-hello-world.git
+
+# Navigate to the project directory
+cd django-hello-world/
+
+# Create a Python virtual environment
+python3 -m venv venv
+
+# Activate the virtual environment
+source venv/bin/activate
+
+# Install Django and Gunicorn inside the virtual environment
+pip install django
+pip install gunicorn
+
+# Move to the Django project directory
+cd helloworld/
+
+# Start the Django development server (for testing purposes)
+python manage.py runserver
+
+# Deactivate the virtual environment
+deactivate
+
+# Edit a systemd service file for Django
+sudo nano /etc/systemd/system/django.service
+
+# Add the following content into django.service file
+
+[Unit]
+Description=A django application server
+After=network.target
+
+[Service]
+ExecStart=/home/django1/django-hello-world/venv/bin/gunicorn --workers=3 --bind=0.0.0.0:8000 helloword.wsgi:application
+Restart=always
+WorkingDirectory=/home/django1/django-hello-world/helloworld
+[Install]
+WantedBy=multi-user.target
+
+# Reload the systemd daemon to recognize the new service
+sudo systemctl daemon-reload 
+
+# Start the Django service using systemd
+sudo systemctl start django.service 
+
+# Check the status of the Django service
+sudo systemctl status django.service 
+
+# Enable the Django service to start on boot
+sudo systemctl enable django.service 
+
+# Check the status of the Django service again
+sudo systemctl status django.service 
+

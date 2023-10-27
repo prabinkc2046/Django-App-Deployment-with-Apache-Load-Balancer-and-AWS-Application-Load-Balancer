@@ -1,0 +1,33 @@
+# Update package information to ensure you have the latest package details
+sudo apt update
+
+# Install the Apache HTTP Server
+sudo apt install apache2
+
+# Change directory to Apache's site configuration directory
+cd /etc/apache2/sites-available/
+
+# Create a new configuration file for load balancing (lb.conf)
+sudo nano lb.conf
+
+# Copy the default Apache configuration file to lb.conf for editing
+sudo cp 000-default.conf lb.conf
+
+# Open the lb.conf file for further configuration
+sudo nano lb.conf
+Apache configuration to set this up as load balancing server can be found [here](./configuration/lb.conf)
+
+# Enable required Apache modules for load balancing
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_balancer
+sudo a2enmod lbmethod_byrequests
+
+# Check the Apache configuration for syntax errors
+sudo apache2ctl configtest
+
+# Restart the Apache service to apply the changes
+sudo systemctl restart apache2.service
+
+# Check the status of the Apache service to verify it's running
+sudo systemctl status apache2.service
